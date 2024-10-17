@@ -102,6 +102,67 @@ public:
 
     return newnode->KeyValuePair.second;
   }
+
+
+
+  class iterator
+  {
+  private:
+    NODE* Ptr;
+
+  public:
+    iterator(NODE* ptr) // constructor:
+      : Ptr(ptr)
+    { }
+
+    bool operator==(iterator other) //for comparing to == end()
+    {
+      if (this->Ptr == other.Ptr)
+        return true;
+      else
+        return false;
+    }
+    pair<KeyT, ValueT>* operator->()//for accessing the <key, value>
+    {
+      if (this->Ptr == nullptr)
+        return nullptr;
+      else
+        return &(this->Ptr->KeyValuePair);
+    }
+  };
+
+  //
+  // end()
+  //
+  iterator end()
+  {
+    return iterator(nullptr);
+  }
+
+  //
+  // find()
+  //
+  iterator find(KeyT key) 
+  {
+    //
+    // Search for node that contains key:
+    //
+    NODE* cur = Root;
+
+    while (cur != nullptr) {
+
+      if (cur->KeyValuePair.first == key) {
+        return iterator(cur);
+      }
+
+      cur = cur->Next;
+    }
+
+    // if get here, not found:
+    return iterator(nullptr);
+  }
+
+
 };
 
 //
@@ -134,7 +195,14 @@ int main() {
       cout << "# of animals: " << animals.size() << endl;
     }
     else {
-      cout << "I own " << animals[type] << " " << type << endl;
+      //cout << "I own " << animals[type] << " " << type << endl;
+
+      auto iter = animals.find(type);
+
+      if (iter == animals.end()) //not found
+        cout << "I don't own any " << type << endl;
+      else
+        cout << "I own " << iter->second << " " << type << endl;
     }
 
   }//while
